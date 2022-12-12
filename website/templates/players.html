@@ -1,0 +1,51 @@
+{% extends "base.html" %} 
+{% block title %}Players{% endblock %} 
+
+{% block content %}
+
+    <h1>Players</h1>
+
+<table class="table">
+        <thead>
+            <tr>
+                <th scope="col">First Name</th>
+                <th scope="col">Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in players %}
+            <tr>
+                <td>{{ player.first_name }}</td>
+                <td>
+                    <form method="POST"
+                        action="{{ url_for('views.delete_player', player_id=player.id) }}">
+                        <input type="submit" class="btn btn-sm btn-danger" value="Delete"
+                            onclick="return confirm('Are you sure you want to delete this entry?')">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+</table>
+
+
+<div></div>
+
+    <form method="POST">
+      <h3 align="Left">Add Player</h3>
+
+      <div class="form-group">
+        <label for="firstName">First Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="firstName"
+          name="firstName"
+          placeholder="Enter first name"
+        />
+      </div>
+
+      <br />
+      <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    {% endblock %}
