@@ -19,20 +19,22 @@ class Season(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(150), unique=True)
     startDate = db.Column(db.DateTime(timezone=True), default=func.now())
-    endDate = db.Column(db.DateTime(timezone=True), default=func.now())
     closed = db.Column(db.Boolean, default=False)
 
 class Match(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     player1 = db.Column(db.Integer, db.ForeignKey('player.id'), nullable=False)
     player2 = db.Column(db.Integer, db.ForeignKey('player.id'), nullable=False)
-    player1_score = db.Column(db.Integer, nullable=False)
-    player2_score = db.Column(db.Integer, nullable=False)
+    player1_score = db.Column(db.Integer, nullable=True)
+    player2_score = db.Column(db.Integer, nullable=True)
     date = db.Column(db.DateTime(timezone=True), default=func.now())
     season = db.Column(db.Integer, db.ForeignKey('season.id'), nullable=False)
+    rounds = db.relationship('Round', backref='match', lazy=True)
+    completed = db.Column(db.Boolean, default=False)
 
 class Round(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    match= db.Column(db.Integer, db.ForeignKey('match.id'), nullable=False)
+    match_id= db.Column(db.Integer, db.ForeignKey('match.id'), nullable=False)
+    number= db.Column(db.Integer, nullable=False)
     player1_score = db.Column(db.Integer, nullable=False)
     player2_score = db.Column(db.Integer, nullable=False)

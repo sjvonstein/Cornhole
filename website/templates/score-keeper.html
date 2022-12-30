@@ -1,0 +1,94 @@
+{% extends "base.html" %} 
+{% block title %}Score Keeper{% endblock %}
+
+{% block content %}
+
+<form method="POST" action="{{ url_for('views.add_round', match_id=match.id) }}">
+    <label for="player1_score">{{ players[match.player1] }}: </label>
+    <div class="mb-3">
+        <input
+        type="range"
+        name="player1_score"
+        id="player1_score"
+        min="0"
+        max="8"
+        step="1"
+        value="0" />
+      <output class="player1_score_output" for="player1_score"></output>
+
+    </div>
+
+    <label for="player2_score">{{ players[match.player2] }}: </label>
+    <div class="mb-3">
+        <input
+        type="range"
+        name="player2_score"
+        id="player2_score"
+        min="0"
+        max="8"
+        step="1"
+        value="0" />
+      <output class="player2_score_output" for="player2_score"></output>
+    </div>
+          <div class="mb-3">
+              <button type="submit" name="submitRound" class="btn btn-primary">Submit Round</button>
+          </div>
+</form>
+
+<form method="POST"
+action="{{ url_for('views.complete_match', match_id=match.id) }}">
+<input type="submit" class="btn btn-sm btn-danger" value="End Match"
+    onclick="return confirm('Are you sure you want to end this match?')">
+</form>
+
+<script>
+    const score1 = document.querySelector("#player1_score");
+    const score2 = document.querySelector("#player2_score");
+
+    const output1 = document.querySelector(".player1_score_output");
+    const output2 = document.querySelector(".player2_score_output");
+
+    output1.textContent = score1.value;
+    output2.textContent = score2.value;
+
+
+    score1.addEventListener("input", () => {
+    output1.textContent = score1.value;
+    });
+    score2.addEventListener("input", () => {
+        output2.textContent = score2.value;
+        });
+</script>
+
+<h1>Rounds</h1>
+
+<table class="table">
+        <thead>
+            <tr>
+                <th scope="col">Rounds</th>
+                <th scope="col">Match Date </th>
+                <th scope="col">{{ players[match.player1] }} </th>
+                <th scope="col">{{ players[match.player2] }} </th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for round in rounds %}
+            <tr>
+                <td>{{ round.id }}</td>
+                <td>{{ match.date.date() }}</td>
+                <td>{{ round.player1_score }}</td>
+                <td>{{ round.player2_score }}</td>
+
+                <td>
+                    <form method="POST"
+                        action="{{ url_for('views.delete_round', round_id=round.id) }}">
+                        <input type="submit" class="btn btn-sm btn-danger" value="Delete"
+                            onclick="return confirm('Are you sure you want to delete this round?')">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+</table>
+
+{% endblock %}

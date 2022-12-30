@@ -17,8 +17,6 @@ def create_app():
 
     app.register_blueprint(views, url_prefix="/")
 
-    from .models import Player
-
     with app.app_context():
         db.create_all()
 

@@ -16,47 +16,74 @@
     />
 
     <title>{%block title %}Home{% endblock %}</title>
+
   </head>
+  
+
+
+
+
+
+
   <body>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbar"
-      >
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">Cornhole</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
-      <div class="collapse navbar-collapse" id="navbar">
-        <div class="navbar-nav">
-          <a class="nav-item nav-link" id="players" href="/players">Players</a>
-          <a class="nav-item nav-link" id="scoreboard" href="/score-board">Score Board</a>
-          <a class="nav-item nav-link" id="stats" href="/stats">Statistics</a>
-          <a class="nav-item nav-link" id="home" href="/">Home</a>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" id="players" href="/players">Players</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" id="seasons" href="/seasons">Seasons</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" id="matches" href="/matches">Matches</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" id="rounds" href="/rounds">Rounds</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" id="scoreboard" href="/score-board">Score Board</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" id="stats" href="/stats">Statistics</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" aria-current="page" id="home" href="/">Home</a>
+          </li>
         </div>
       </div>
     </nav>
 
-    {% with messages = get_flashed_messages(with_categories=true) %} {% if
-    messages %} {% for category, message in messages %} {% if category ==
-    'error' %}
-    <div class="alart alert-danger alter-dismissable fade show" role="alert">
-      {{message}}
-      <button type="button" class="close" data-dismiss="alert">
-        <span aria-hidden="true">&times;</span>
-      </button>
-    </div>
-    {% elif category == 'success' %}
-    <div class="alart alert-success alter-dismissable fade show" role="alert">
-      {{message}}
-      <button type="button" class="close" data-dismiss="alert">
-        <span aria-hidden="true">&times;</span>
-      </button>
+    {% with messages = get_flashed_messages(with_categories=true) %} 
+      {% if messages %} 
+        {% for category, message in messages %} 
+          {% if category == 'error' %}
+            <div class="alert alert-danger alert-dismissable fade show" role="alert">
+              {{message}} 
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          {% elif category == 'success' %}
+              <div class="alert alert-success alert-dismissable fade show" role="alert">
+                {{message}} 
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </button>
+              </div>
+          {% endif %} 
+        {% endfor %} 
+      {% endif %} 
+    {% endwith %}
+
+    <div class="container">
+      {% block content%} {% endblock %}
+    
     </div>
 
-    {% endif %} {% endfor %} {% endif %} {% endwith %}
 
-    <div class="container">{% block content%} {% endblock %}</div>
     <script
       src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
       integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"

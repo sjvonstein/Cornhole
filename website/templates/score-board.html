@@ -3,33 +3,43 @@
 
 {% block content %}
 
-<h1>Choose Players</h1>
+<h1>Score Board</h1>
 
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th scope="col">Rounds</th>
+            <th scope="col">Total</th>
+            {% for round in rounds %}
+            <th scope="col">{{ round.id }}</th>
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody class="table-group-divider">
+        <tr>
+            <td>{{ players[match.player1] }}</td>
+            <td>{{ player1_total }}</td>
+            {% for round in rounds %}
+            <td>{{ round.player1_score }}</td>
+            {% endfor %}
+        </tr>
+        <tr>
+            <td>{{ players[match.player2] }}</td>
+            <td>{{ player2_total }}</td>
+            {% for round in rounds %}
+            <td>{{ round.player2_score }}</td>
+            {% endfor %}
+        </tr>
+    </tbody>
+</table>
 
-<form>
-    <div class="input-group mb-3">
-
-            <select class="form-select" aria-label="Select Player 1" id="player1selected">
-                <option selected>Player 1...</option>
-
-                {% for player in players %}
-                <option value="">{{ player.first_name }}</option>
-                {% endfor %}
-
-            </select>
-    </div>
-    <div class="input-group mb-3">
-            <select class="form-select" aria-label="Select Player 2" id="player2selected">
-                <option selected>Player 2...</option>
-
-                {% for player in players %}
-                <option value="">{{ player.first_name }}</option>
-                {% endfor %}
-
-            </select>
-    </div>
-            <button type="submit" class="btn btn-primary">Start Game</button>
-    </div>
-</form>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+      setInterval(function() {
+        location.reload();
+      }, 15000);
+    });
+  </script>
 
 {% endblock %}
