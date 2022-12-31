@@ -2,7 +2,9 @@
 {% block title %}Score Keeper{% endblock %}
 
 {% block content %}
-
+<br />
+<br />
+<div class="mx-auto" style="width: 200px;">
 <form method="POST" action="{{ url_for('views.add_round', match_id=match.id) }}">
     <label for="player1_score">{{ players[match.player1] }}: </label>
     <div class="mb-3">
@@ -40,7 +42,7 @@ action="{{ url_for('views.complete_match', match_id=match.id) }}">
 <input type="submit" class="btn btn-sm btn-danger" value="End Match"
     onclick="return confirm('Are you sure you want to end this match?')">
 </form>
-
+</div>
 <script>
     const score1 = document.querySelector("#player1_score");
     const score2 = document.querySelector("#player2_score");
