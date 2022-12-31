@@ -261,3 +261,10 @@ def delete_round(round_id):
     db.session.delete(round)
     db.session.commit()
     return redirect(url_for('views.score_keeper'))
+
+
+# --------------- STATISTICS -----------------
+@views.route("/statistics", methods=["GET", "POST"])
+def statistics():
+
+    return render_template("statistics.html")
