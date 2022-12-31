@@ -47,6 +47,7 @@ def player():
                     new_player = Player(first_name=player)
                     db.session.add(new_player)
             db.session.commit()
+            return redirect(url_for("views.player"))
     else:
         # If the request method is GET, just render the page
         # Query the database for all players
