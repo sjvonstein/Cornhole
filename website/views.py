@@ -70,11 +70,16 @@ def delete_player(player_id):
 
 def score_keeper():
     match = Match.query.filter_by(completed=False).first()
-    rounds = Round.query.filter_by(match_id=match.id).all()
-    players = {player.id: player.first_name for player in Player.query.all()}
-    player1_total = sum(round.player1_score for round in rounds)
-    player2_total = sum(round.player2_score for round in rounds)
-    return render_template("score-keeper.html", players=players,match=match, rounds=rounds, player1_total=player1_total, player2_total=player2_total)
+    # If there is no match in progress, redirect to matches page
+    if match is None:
+        flash ("No matches have been started yet. Create a new match first.", category="error")
+        return redirect(url_for("views.matches"))
+    else:
+        rounds = Round.query.filter_by(match_id=match.id).all()
+        players = {player.id: player.first_name for player in Player.query.all()}
+        player1_total = sum(round.player1_score for round in rounds)
+        player2_total = sum(round.player2_score for round in rounds)
+        return render_template("score-keeper.html", players=players,match=match, rounds=rounds, player1_total=player1_total, player2_total=player2_total)
 
 
 
@@ -164,11 +169,15 @@ def delete_season(season_id):
 
 @views.route("/matches", methods=["GET", "POST"])
 def matches():
+    
     if request.method == "POST":
         season_id = request.form.get("seasonSelect")
         player1_id = request.form.get("player1Select")
         player2_id = request.form.get("player2Select")
-        if Match.query.filter_by(completed=False).count() >0:
+        
+        if not season_id or not player1_id or not player2_id:
+            flash("Please select a season, player 1 and player 2", category="error")
+        elif Match.query.filter_by(completed=False).count() >0:
             flash("Match already in progress", category="error")
         elif player1_id == player2_id:
             flash("Players must be different", category="error")
@@ -178,10 +187,7 @@ def matches():
             db.session.add(new_match)
             db.session.commit()
             flash("Match Created.", category="success")
-            players = {player.id: player.first_name for player in Player.query.all()}
-            season = Season.query.filter_by(id=season_id).first()
-            seasonName = season.name
-            return render_template("score-board.html", match=new_match, players=players, seasonName=seasonName)
+            return redirect(url_for('views.score_keeper'))
 
     openSeasons = Season.query.filter_by(closed=False)
     seasons = {season.id: season.name for season in Season.query.all()}
@@ -201,9 +207,32 @@ def delete_match(match_id):
 @views.post('/<int:match_id>/completeMatch/') 
 def complete_match(match_id):
     match = Match.query.filter_by(id=match_id).first()
-    match.completed = True
-    db.session.commit()
-    return redirect(url_for('views.matches'))
+    rounds = Round.query.filter_by(match_id=match.id).all()
+    if len(rounds) < 3:
+        flash("Match must have at least 3 rounds", category="error")
+        return redirect(url_for('views.matches'))
+    else:
+        # Total scores for each player
+        player1_total = 0
+        player2_total = 0
+        for round in rounds:
+            player1_total += round.player1_score
+            player2_total += round.player2_score
+        # Check if there was a tie and return an error is true
+        if player1_total == player2_total:
+            flash("Match cannot end in a tie", category="error")
+            return redirect(url_for('views.matches'))
+        # Check that either player scored at least 21 points
+        elif player1_total < 21 and player2_total < 21:
+            flash("Match must have at least 21 points", category="error")
+            return redirect(url_for('views.matches'))
+        else: 
+            # Add the scores to the match record
+            match.player1_score = player1_total
+            match.player2_score = player2_total
+            match.completed = True
+            db.session.commit()
+            return redirect(url_for('views.matches'))
 
 @views.post('/<int:match_id>/openMatch/') 
 def open_match(match_id):
@@ -215,6 +244,8 @@ def open_match(match_id):
         match.completed = False
         db.session.commit()
         return redirect(url_for('views.matches'))
+
+
 
 # --------------- ROUNDS -----------------
 @views.route("/rounds", methods=["GET", "POST"])

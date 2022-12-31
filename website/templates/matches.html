@@ -43,6 +43,12 @@
                         <input type="submit" class="btn btn-sm btn-success" value="Complete"
                             onclick="return confirm('Are you sure you want to complete this match?')">
                     </form>
+                </td>
+                <td>
+                    <form method="POST"
+                        action="{{ url_for('views.score_keeper') }}">
+                        <input type="submit" class="btn btn-sm btn-success" value="Score Keeper">
+                    </form>
                   {% else %}
                     <form method="POST"
                         action="{{ url_for('views.open_match', match_id=match.id) }}">
