@@ -8,9 +8,6 @@
             "name": "Python: Current File",
             "type": "python",
             "request": "launch",
-            "env":{
-                "FLASK_APP": "main:app"
-            },
             "program": "${workspaceFolder}/main.py",
             "console": "integratedTerminal",
             "justMyCode": true
