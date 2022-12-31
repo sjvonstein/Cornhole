@@ -264,7 +264,7 @@ def delete_round(round_id):
 
 
 # --------------- STATISTICS -----------------
-@views.route("/statistics", methods=["GET", "POST"])
+@views.route("/stats", methods=["GET", "POST"])
 def statistics():
 
     return render_template("statistics.html")
