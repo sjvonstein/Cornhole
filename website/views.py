@@ -90,16 +90,26 @@ def score_keeper():
 
 def score_board():
     match = Match.query.filter_by(completed=False).first()
-    rounds = Round.query.filter_by(match_id=match.id).all()
-    players = {player.id: player.first_name for player in Player.query.all()}
-    player1_total = sum(round.player1_score for round in rounds)
-    player2_total = sum(round.player2_score for round in rounds)
-    return render_template("score-board.html", players=players,match=match, rounds=rounds, player1_total=player1_total, player2_total=player2_total)
+    if match is None:
+        match=Match.query.order_by(Match.id.desc()).first()
+        if match is None:
+            flash ("No matches have been started yet. Create a new match first.", category="error")
+            return redirect(url_for("views.matches"))
+        else:
+            return previous_rounds(match.id)
+    else:
+        rounds = Round.query.filter_by(match_id=match.id).all()
+        players = {player.id: player.first_name for player in Player.query.all()}
+        player1_total = sum(round.player1_score for round in rounds)
+        player2_total = sum(round.player2_score for round in rounds)
+        return render_template("score-board.html", players=players,match=match, rounds=rounds, player1_total=player1_total, player2_total=player2_total)
 def previous_rounds(match_id):
     match = Match.query.filter_by(id=match_id).first()
     rounds = Round.query.filter_by(match_id=match.id).all()
     players = {player.id: player.first_name for player in Player.query.all()}
-    return render_template("score-board.html", match=match, rounds=rounds, players=players)
+    player1_total = sum(round.player1_score for round in rounds)
+    player2_total = sum(round.player2_score for round in rounds)
+    return render_template("score-board.html", match=match, rounds=rounds, players=players, player1_total=player1_total, player2_total=player2_total)
 
 @views.post('/<int:match_id>/addRound/') 
 def add_round(match_id):
@@ -140,6 +150,12 @@ def add_season():
 @views.post('/<int:season_id>/deleteSeason/') 
 def delete_season(season_id):
     season = Season.query.filter_by(id=season_id).first()
+    matches = Match.query.filter_by(season=season_id).all()
+    for match in matches:
+        rounds = Round.query.filter_by(match_id=match.id).all()
+        for round in rounds:
+            db.session.delete(round)
+        db.session.delete(match)
     db.session.delete(season)
     db.session.commit()
     return redirect(url_for('views.add_season'))
@@ -177,6 +193,7 @@ def matches():
 @views.post('/<int:match_id>/deleteMatch/') 
 def delete_match(match_id):
     match = Match.query.filter_by(id=match_id).first()
+    Round.query.filter_by(match_id=match.id).delete()
     db.session.delete(match)
     db.session.commit()
     return redirect(url_for('views.matches'))
