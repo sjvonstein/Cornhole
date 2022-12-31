@@ -251,11 +251,8 @@ def open_match(match_id):
 # --------------- ROUNDS -----------------
 @views.route("/rounds", methods=["GET", "POST"])
 def rounds():
-    rounds = Round.query.all()
-    players = Player.query.all()
-    matchesOpen = Match.query.where(Match.completed == False)
-    matchesAll = Match.query.all()
-    return render_template("rounds.html", rounds=rounds, players=players, matchesOpen=matchesOpen, matchesAll=matchesAll)
+
+    return render_template("rounds.html")
 
 
 @views.post('/<int:round_id>/deleteRound/') 
