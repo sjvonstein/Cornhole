@@ -55,6 +55,13 @@
                         <input type="submit" class="btn btn-sm btn-warning" value="Re-Open"
                             onclick="return confirm('Are you sure you want to re-open this match?')">
                     </form>
+                    <!-- A button which will open up the score-board.html page with this matches rounds loaded.-->
+                    <td>
+                    <form method="POST"
+                        action="{{ url_for('views.previous_rounds', match_id=match.id) }}">
+                        <input type="submit" class="btn btn-sm btn-success" value="Score Board">
+                    </form>
+                    </td>
                   {% endif %}
                 </td>
                 <td></td>
