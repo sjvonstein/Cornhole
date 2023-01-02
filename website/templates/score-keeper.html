@@ -69,14 +69,14 @@ action="{{ url_for('views.complete_match', match_id=match.id) }}">
             <tr>
                 <th scope="col">Rounds</th>
                 <th scope="col">Match Date </th>
-                <th scope="col">{{ players[match.player1] }} </th>
-                <th scope="col">{{ players[match.player2] }} </th>
+                <th scope="col">{{ players[match.player1] }} {{ player1_total }} </th>
+                <th scope="col">{{ players[match.player2] }} {{ player2_total }}</th>
             </tr>
         </thead>
         <tbody>
             {% for round in rounds %}
             <tr>
-                <td>{{ round.id }}</td>
+                <td>{{ round.number }}</td>
                 <td>{{ match.date.date() }}</td>
                 <td>{{ round.player1_score }}</td>
                 <td>{{ round.player2_score }}</td>
