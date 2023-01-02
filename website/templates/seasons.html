@@ -27,6 +27,21 @@
                             onclick="return confirm('Are you sure you want to delete this season?')">
                     </form>
                 </td>
+                <!-- Button to open or close the season, depending on its current state-->
+                <td>
+                    {% if season.closed == False %}
+                    <form method="POST"
+                        action="{{ url_for('views.close_season', season_id=season.id) }}">
+                        <input type="submit" class="btn btn-sm btn-danger" value="Close Season"
+                            onclick="return confirm('Are you sure you want to close this season?')">
+                    </form>
+                    {% else %}
+                    <form method="POST"
+                        action="{{ url_for('views.open_season', season_id=season.id) }}">
+                        <input type="submit" class="btn btn-sm btn-success" value="Open Season"
+                            onclick="return confirm('Are you sure you want to open this season?')">
+                    </form>
+                    {% endif %}
             </tr>
             {% endfor %}
         </tbody>
