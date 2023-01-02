@@ -13,7 +13,7 @@ views = Blueprint("views", __name__)
 def home():
     return render_template("home.html")
 
-
+#------------------- Players -------------------
 # Players Page
 @views.route("/players", methods=["GET", "POST"])
 
@@ -80,6 +80,21 @@ def score_keeper():
         players = {player.id: player.first_name for player in Player.query.all()}
         player1_total = sum(round.player1_score for round in rounds)
         player2_total = sum(round.player2_score for round in rounds)
+        # Alert the user if either player scores at least 21 and there is no tie
+        if player1_total >= 21 and player1_total > player2_total:
+            flash (players[match.player1] + " Wins!", category="success")
+            
+            # Complete the match by making a request to the complete_match route
+            return redirect(url_for("views.complete_match", match_id=match.id))
+
+        elif player2_total >= 21 and player2_total > player1_total:
+            flash (players[match.player2] + " Wins!", category="success")
+
+            # Complete the match by making a request to the complete_match route
+            return redirect(url_for("views.complete_match", match_id=match.id))
+
+
+
         return render_template("score-keeper.html", players=players,match=match, rounds=rounds, player1_total=player1_total, player2_total=player2_total)
 
 
@@ -109,6 +124,9 @@ def score_board():
         player1_total = sum(round.player1_score for round in rounds)
         player2_total = sum(round.player2_score for round in rounds)
         return render_template("score-board.html", players=players,match=match, rounds=rounds, player1_total=player1_total, player2_total=player2_total)
+
+
+@views.post('/<int:match_id>/previousRounds/')
 def previous_rounds(match_id):
     match = Match.query.filter_by(id=match_id).first()
     rounds = Round.query.filter_by(match_id=match.id).all()
@@ -205,7 +223,7 @@ def delete_match(match_id):
     db.session.commit()
     return redirect(url_for('views.matches'))
 
-@views.post('/<int:match_id>/completeMatch/') 
+@views.route('/<int:match_id>/completeMatch/', methods=["GET", "POST"]) 
 def complete_match(match_id):
     match = Match.query.filter_by(id=match_id).first()
     rounds = Round.query.filter_by(match_id=match.id).all()
