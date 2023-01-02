@@ -184,6 +184,25 @@ def delete_season(season_id):
     db.session.commit()
     return redirect(url_for('views.add_season'))
 
+#Route to close a season
+@views.post('/<int:season_id>/closeSeason/')
+def close_season(season_id):
+    season = Season.query.filter_by(id=season_id).first()
+    season.closed = True
+    db.session.commit()
+    return redirect(url_for('views.add_season'))
+
+#Route to open a season, only if there is no other open season
+@views.post('/<int:season_id>/openSeason/')
+def open_season(season_id):
+    season = Season.query.filter_by(id=season_id).first()
+    if Season.query.filter_by(closed=False).count() >0:
+        flash("Season already in progress", category="error")
+    else:
+        season.closed = False
+        db.session.commit()
+    return redirect(url_for('views.add_season'))
+
 #-------------------Matches-------------------
 
 @views.route("/matches", methods=["GET", "POST"])
